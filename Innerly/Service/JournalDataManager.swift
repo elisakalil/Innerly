@@ -40,9 +40,7 @@ class JournalDataManager: ObservableObject {
     }
     
     private func loadEntries() {
-//        emptySampleData()
         guard let data = userDefaults.data(forKey: entriesKey) else {
-            // Load sample data for preview
            loadSampleData()
             return
         }

@@ -1,9 +1,8 @@
 import SwiftUI
 
 struct HomeView: View {
-    @State private var journalText = ""
-    @State private var showingSummary = false
-    @State private var currentEntry: JournalEntry?
+    @StateObject var viewModel = HomeViewModel()
+
     @FocusState private var isTextFieldFocused: Bool
     
     var body: some View {
@@ -74,14 +73,14 @@ struct HomeView: View {
                                             )
                                     )
                                 
-                                TextEditor(text: $journalText)
+                                TextEditor(text: $viewModel.journalText)
                                     .font(.system(size: 16, weight: .regular, design: .rounded))
                                     .padding(20)
                                     .background(Color.clear)
                                     .focused($isTextFieldFocused)
                                     .scrollContentBackground(.hidden)
                                 
-                                if journalText.isEmpty && !isTextFieldFocused {
+                                if viewModel.journalText.isEmpty && !viewModel.isTextFieldFocused {
                                     Text("Share your thoughts, feelings, or experiences...")
                                         .font(.system(size: 16, weight: .light, design: .rounded))
                                         .foregroundColor(.secondary)
@@ -92,27 +91,27 @@ struct HomeView: View {
                             }
                             .frame(minHeight:  UIScreen.main.bounds.height * 0.36)
                             
-                            // Submit Button
-                            Button(action: submitEntry) {
-                                    
-                                    Text("Reflect & Save")
-                                    .font(.system(size: 18, weight: .regular, design: .rounded))
-                                
-                                .foregroundColor(.white)
-                                .frame(maxWidth: .infinity)
-                                .frame(height: 56)
-                                .background(
-                                    LinearGradient(
-                                        colors: [.teal, .mint],
-                                        startPoint: .leading,
-                                        endPoint: .trailing
-                                    )
+                            Button {
+                                viewModel.submitEntry()
+                            } label: {
+                                Text("Reflect & Save")
+                                .font(.system(size: 18, weight: .regular, design: .rounded))
+                            
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 56)
+                            .background(
+                                LinearGradient(
+                                    colors: [.teal, .mint],
+                                    startPoint: .leading,
+                                    endPoint: .trailing
                                 )
-                                .clipShape(RoundedRectangle(cornerRadius: 16))
-                                .shadow(color: .teal.opacity(0.3), radius: 8, x: 0, y: 4)
+                            )
+                            .clipShape(RoundedRectangle(cornerRadius: 16))
+                            .shadow(color: .teal.opacity(0.3), radius: 8, x: 0, y: 4)
                             }
-                            .disabled(journalText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-                            .opacity(journalText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? 0.6 : 1.0)
+                            .disabled(viewModel.journalText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                            .opacity(viewModel.journalText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? 0.6 : 1.0)
                         }
                         .padding(.horizontal, 24)
                         
@@ -122,28 +121,11 @@ struct HomeView: View {
             }
             .navigationBarHidden(true)
         }
-        .sheet(isPresented: $showingSummary) {
-            if let entry = currentEntry {
-                SummaryView(entry: entry, onDismiss: {
-                    showingSummary = false
-                    journalText = ""
-                })
-            }
+        .sheet(item: $viewModel.currentEntry) { entry in
+            SummaryView(entry: entry, onDismiss: {
+                viewModel.clearAndClose()
+            })
         }
-    }
-    
-    private func submitEntry() {
-        let entry = JournalEntry(
-            id: UUID(),
-            text: journalText,
-            date: Date(),
-            detectedEmotion: "Peaceful" // Placeholder for AI emotion detection
-        )
-        
-        currentEntry = entry
-        JournalDataManager.shared.addEntry(entry)
-        showingSummary = true
-        isTextFieldFocused = false
     }
 }
 

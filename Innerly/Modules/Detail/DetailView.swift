@@ -98,7 +98,6 @@ struct DetailView: View {
                     .padding(.top, 20)
                 }
             }
-            .navigationTitle("Journal Entry")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {

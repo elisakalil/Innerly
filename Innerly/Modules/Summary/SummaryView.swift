@@ -22,7 +22,6 @@ struct SummaryView: View {
                 
                 ScrollView {
                     VStack(spacing: 30) {
-                        // Success Icon
                         ZStack {
                             Circle()
                                 .fill(
@@ -47,7 +46,6 @@ struct SummaryView: View {
                         .scaleEffect(showingConfetti ? 1.1 : 1.0)
                         .animation(.spring(response: 0.6, dampingFraction: 0.8), value: showingConfetti)
                         
-                        // Title
                         Text("Entry Saved!")
                             .font(.system(size: 32, weight: .bold, design: .rounded))
                             .foregroundColor(.primary)
@@ -56,9 +54,7 @@ struct SummaryView: View {
                             .font(.system(size: 16, weight: .medium, design: .rounded))
                             .foregroundColor(.secondary)
                         
-                        // Entry Summary Card
                         VStack(spacing: 20) {
-                            // Detected Emotion
                             VStack(spacing: 12) {
                                 HStack {
                                     Image(systemName: "face.smiling.fill")
@@ -90,7 +86,6 @@ struct SummaryView: View {
                             Divider()
                                 .background(Color.teal.opacity(0.3))
                             
-                            // Entry Preview
                             VStack(spacing: 12) {
                                 HStack {
                                     Image(systemName: "quote.opening")
@@ -174,19 +169,10 @@ struct SummaryView: View {
                         Spacer(minLength: 50)
                     }
                     .padding(.horizontal, 24)
-                    .padding(.top, 20)
+                    .padding(.top, 50)
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") {
-                        onDismiss()
-                    }
-                    .font(.system(size: 16, weight: .medium, design: .rounded))
-                    .foregroundColor(.teal)
-                }
-            }
         }
         .onAppear {
             showingConfetti = true
