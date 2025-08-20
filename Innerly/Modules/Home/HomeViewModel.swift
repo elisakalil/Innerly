@@ -12,6 +12,8 @@ class HomeViewModel: ObservableObject {
     @Published var currentEntry: JournalEntry?
     @Published var isTextFieldFocused = false
     
+    let emotionClassifier = try? InnerlyClassifier(configuration: .init())
+    
     func submitEntry() {
         let entry = JournalEntry(
             id: UUID(),
@@ -23,6 +25,14 @@ class HomeViewModel: ObservableObject {
         currentEntry = entry
         JournalDataManager.shared.addEntry(entry)
         isTextFieldFocused = false
+    }
+    
+    func detectEmotion(from text: String) -> String {
+        guard let prediction = try? emotionClassifier?.prediction(text: text) else {
+            return "Unknow"
+        }
+        
+        return prediction.label
     }
     
     func clearAndClose() {
